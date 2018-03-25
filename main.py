@@ -10,7 +10,7 @@ from bokeh.models.widgets import Slider, TextInput,Button,CheckboxGroup,RadioBut
 from bokeh.plotting import figure
 import scipy.spatial as spatial
 
-df = pd.read_csv('/Users/samirakumar/Desktop/Samir/Crosses/crosses_updated.csv')
+df = pd.read_csv('crosses_updated.csv')
 headers = ["cross_id", "x", "y","pass_end_x", "pass_end_y"]
 crosses = pd.DataFrame(df, columns=headers)
 
