@@ -5,4 +5,4 @@ web: bokeh serve \
     --show \
     --host=cross-locations.herokuapp.com \
     --host=* --address=0.0.0.0 \
-    --use-xheaders main.py
+    --use-xheaders myapp
