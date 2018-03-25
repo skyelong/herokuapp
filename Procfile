@@ -1,1 +1,8 @@
-web: bokeh serve --port=$PORT --num-procs=0 --host=cross-locations.herokuapp.com --address=0.0.0.0 --use-xheaders main.py
+web: bokeh serve \
+    --log-level=debug \
+    --num-procs=0 \
+    --port=$PORT \
+    --show \
+    --host=cross-locations.herokuapp.com \
+    --host=* --address=0.0.0.0 \
+    --use-xheaders main.py
