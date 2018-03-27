@@ -1,1 +1,1 @@
-web: bokeh serve --host=cross-locations.herokuapp.com --port $PORT --use-xheaders myapp/main
+web: bokeh serve --port=$PORT --allow-websocket-origin=cross-locations.herokuapp.com --address=0.0.0.0 --use-xheaders myapp
