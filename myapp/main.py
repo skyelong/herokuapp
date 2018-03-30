@@ -6,9 +6,13 @@ import numpy as np
 import pandas as pd
 from bokeh.io import curdoc,show
 from bokeh.layouts import row,column, widgetbox
-from bokeh.models import ColumnDataSource,LabelSet,Div,PointDrawTool,PolyDrawTool,PolyEditTool,PolySelectTool,CustomJS
+from bokeh.models import ColumnDataSource,LabelSet,Div,Paragraph,PointDrawTool,PolyDrawTool,PolyEditTool,PolySelectTool,CustomJS
 from bokeh.models.widgets import Slider, TextInput,Button,CheckboxGroup,RadioButtonGroup,RadioGroup,Select,DataTable, TableColumn
 from bokeh.plotting import figure
+from bokeh.models.glyphs import Text
+
+from bokeh.transform import linear_cmap
+
 
 import scipy.spatial as spatial
 
@@ -16,8 +20,12 @@ df = pd.read_csv('myapp/data/crosses_updated.csv')
 headers = ["cross_id", "x", "y","pass_end_x", "pass_end_y"]
 crosses = pd.DataFrame(df, columns=headers)
 
+
+dx=crosses.x
+dy=crosses.y
+
 source = ColumnDataSource({
-    'x': [89], 'y': [9.5], 'color': ['dodgerblue']
+    'x': [80], 'y': [9], 'color': ['dodgerblue']
 })
 
 ix = source.data['x']
@@ -29,10 +37,11 @@ t2=np.vstack((crosses.x,crosses.y)).T
 
 point_tree = spatial.cKDTree(t2)
 
-ax=(point_tree.query_ball_point(t1, 6)).tolist()
+ax=(point_tree.query_ball_point(t1, 3)).tolist()
 
 cx=crosses.pass_end_x[ax[0]]
 cy=crosses.pass_end_y[ax[0]]
+size=1
 
 source2 = ColumnDataSource({
     'cx': [cx], 'cy': [cy]
@@ -42,17 +51,16 @@ source2 = ColumnDataSource(data=dict(cx=cx,cy=cy))
 
 # Set up plot
 
-plot = figure(plot_height=600, plot_width=800,
-              tools="reset,save",
-              x_range=[0,100], y_range=[0,100],toolbar_location="below",toolbar_sticky=False)
+plot = figure(plot_height=550, plot_width=750,
+              tools="save",
+              x_range=[0,100], y_range=[0,100],toolbar_location="below")
 plot.image_url(url=["myapp/static/images/base.png"],x=0,y=0,w=100,h=100,anchor="bottom_left")
 
 
-st=plot.scatter('x','y',source=source,size=20,fill_color='deepskyblue',line_color='black',line_width=3)
-plot.scatter('cx','cy',source=source2,size=10,fill_color='orangered')
+plot.scatter('cx','cy',source=source2,size=15,fill_color='deepskyblue',line_color='black',line_width=3,alpha=0.4)
 
-# plot.rect('cx','cy',width=1,height=1,source=source2,fill_color='orangered')
 
+st=plot.scatter('x','y',source=source,size=20,fill_color='orangered',line_color='black',line_width=3)
 
 plot.xgrid.grid_line_color = None
 plot.ygrid.grid_line_color = None
@@ -68,7 +76,7 @@ columns = [
 data_table = DataTable(
     source=source,
     #columns=columns,
-    row_headers=False,
+    index_position=None,
     width=800,
     editable=False,
 )
@@ -82,7 +90,7 @@ def on_change_data_source(attr, old, new):
 
     point_tree = spatial.cKDTree(t2)
 
-    ax = (point_tree.query_ball_point(t1, 6)).tolist()
+    ax = (point_tree.query_ball_point(t1, 3)).tolist()
     cx = crosses.pass_end_x[ax[0]]
     cy = crosses.pass_end_y[ax[0]]
 
@@ -93,11 +101,18 @@ source.on_change('data', on_change_data_source)
 
 plot.add_tools(draw_tool)
 plot.toolbar.active_tap = draw_tool
-div = Div(text="""<b>Where do teams cross?</b></br></br>Interactive tool to get cross end locations based on user input. The tool uses cKDTree to calculate the 
-nearest cross start locations and plots the corresponding end locations<br>This was created by <b>Samira Kumar</b></br>""",
-width=600, height=80)
+div = Div(text="""<b><h>WHERE DO TEAMS CROSS?</b></h></br></br>Interactive tool to get cross end locations based on user input. The tool uses <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.cKDTree.htmlL">cKDTree</a> 
+to calculate the nearest cross start locations and plots the corresponding end locations<br></br>
+<br>Created by <b><a href="https://twitter.com/Samirak93">Samira Kumar</a></b> using bokeh</br>""",
+width=550, height=110)
 
-layout=column(div,plot,data_table)
+div_help = Div(text="""<b><h>INSTRUCTIONS</b></h></br></br>Click on the below icon, in the bottom of the viz, to enable the option to drag the red circle.<br></br>
+<img src="https://bokeh.pydata.org/en/latest/_images/PointDraw.png" alt="Point Draw Tool">
+<br></br> 
+The crosses, which have started, from within 3 units of the red circle are collected and their corresponding end locations are plotted in blue 
+<br><b><a href="https://samirak93.github.io/analytics/projects/proj-1.html">Blog Post</a></br>""",
+width=400, height=100)
+
+layout=(column(div,row(plot,div_help),data_table))
 curdoc().add_root(layout)
 curdoc().title = "Where do teams cross?"
-
