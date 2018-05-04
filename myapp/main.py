@@ -13,7 +13,7 @@ from bokeh.plotting import figure
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 
-import
+
 import scipy.spatial as spatial
 
 df = pd.read_csv('myapp/data/crosses_updated.csv')
