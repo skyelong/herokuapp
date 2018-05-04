@@ -8,5 +8,3 @@ requests==2.18.4
 scikit-learn==0.19.1
 scipy==1.0.1
 tornado==5.0.1
-coffeescript==2.0.3
-nodejs==0.1.1
