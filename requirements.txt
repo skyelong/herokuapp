@@ -9,4 +9,4 @@ scikit-learn==0.19.1
 scipy==1.0.1
 tornado==5.0.1
 coffeescript==2.0.3
-nodejs==8.9.3
+nodejs==0.1.1
