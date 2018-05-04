@@ -137,7 +137,7 @@ source.on_change('data', on_change_data_source)
 
 checkbox=CheckboxButtonGroup(labels=["Show Regression Plot"],button_type = "danger")
 
-checkbox.callback = CustomJS.from_coffeescript(args=dict(l0=reg_line,l1=glyph, checkbox=checkbox), code="""
+checkbox.callback = CustomJS(args=dict(l0=reg_line,l1=glyph, checkbox=checkbox), code="""
 l0.visible = 0 in checkbox.active;
 l1.visible = 0 in checkbox.active;
 l0.glyph.line_width = 3;
